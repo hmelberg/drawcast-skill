@@ -1,0 +1,14 @@
+{
+  "name": "drawcast",
+  "owner": {
+    "name": "Hans Olav Melberg"
+  },
+  "description": "The drawcast skill: narrated, hand-drawn teaching figures from your AI.",
+  "plugins": [
+    {
+      "name": "drawcast",
+      "source": "./",
+      "description": "Make drawcasts: short narrated whiteboard explainers, drawn by hand on screen, with a quiz and figures to play with. Your AI writes the drawcast and gives back a drawcast.app link that plays it."
+    }
+  ]
+}
