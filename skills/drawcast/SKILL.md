@@ -160,7 +160,8 @@ every arrow end written as `[x, y]` instead of `{x: …, y: …}` — things the
 player skips. Fix each one and run it again until it prints `OK`:
 
 ```
-node scripts/check_cast.mjs cast.yaml
+node scripts/check_cast.mjs cast.yaml        # with Node: drawcast's own validator
+python3 scripts/check_cast.py cast.yaml      # with Python only: the same checks
 ```
 
 Then, since you cannot see the frames, read your YAML beat by beat and picture

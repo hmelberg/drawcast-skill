@@ -35,9 +35,13 @@ git clone --depth 1 https://github.com/hmelberg/drawcast-skill /tmp/drawcast-ski
 mkdir -p ~/.codex/skills && cp -R /tmp/drawcast-skill/skills/drawcast ~/.codex/skills/
 ```
 
-**Any other assistant** (the Gemini app, ChatGPT, …): give it `skills/drawcast/SKILL.md` as
-instructions and the `references/` files as knowledge. Without code to run, it hands you the
-drawcast's text: paste it at [drawcast.app/#paste](https://www.drawcast.app/#paste).
+**ChatGPT**: make a custom GPT from the same zip — [gpt/README.md](gpt/README.md) has the
+instructions to paste and the steps.
+
+**Any other assistant** with a Python sandbox and file uploads (the Gemini app's Gems, a
+claude.ai Project, …): give it [gpt/instructions.md](gpt/instructions.md) as instructions and
+`drawcast-skill.zip` as a file — it unzips the skill and runs the Python scripts. Without code to
+run, it hands you the drawcast's text: paste it at [drawcast.app/#paste](https://www.drawcast.app/#paste).
 
 ## The links it gives
 
