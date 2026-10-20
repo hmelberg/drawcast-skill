@@ -22,12 +22,17 @@ Settings → Capabilities → Skills → Upload skill. Code execution must be on
 or by hand: copy `skills/drawcast/` to `~/.claude/skills/drawcast/` (every project) or to a
 project's `.claude/skills/drawcast/`.
 
-**Gemini CLI**: copy `skills/drawcast/` to `~/.gemini/skills/drawcast/` (every project) or to a
-project's `.gemini/skills/drawcast/`:
+**Gemini CLI**, with its own command (it asks you to confirm):
+
+```
+gemini skills install https://github.com/hmelberg/drawcast-skill --path skills/drawcast
+```
+
+**Codex** (OpenAI): copy `skills/drawcast/` to `~/.codex/skills/drawcast/`:
 
 ```
 git clone --depth 1 https://github.com/hmelberg/drawcast-skill /tmp/drawcast-skill
-mkdir -p ~/.gemini/skills && cp -R /tmp/drawcast-skill/skills/drawcast ~/.gemini/skills/
+mkdir -p ~/.codex/skills && cp -R /tmp/drawcast-skill/skills/drawcast ~/.codex/skills/
 ```
 
 **Any other assistant** (the Gemini app, ChatGPT, …): give it `skills/drawcast/SKILL.md` as
@@ -43,7 +48,9 @@ drawcast's text: paste it at [drawcast.app/#paste](https://www.drawcast.app/#pas
 - `drawcast.app/#gh=…`: saved in a public GitHub repository of yours, with the GitHub CLI
   (`gh`) signed in. It lasts. (`scripts/save_github.mjs`)
 
-The scripts need Node 18 or later (or Python 3 for `make_link.py`). The claude.ai sandbox may not
+Before giving a link, the skill checks the drawcast with `scripts/check_cast.mjs` — drawcast's own
+validator, bundled — and fixes what it reports. The scripts need Node 18 or later (or Python 3 for
+`make_link.py`). The claude.ai sandbox may not
 reach drawcast's server or GitHub: there the `#cast=` link is the one that always works.
 
 This repository is generated from drawcast's own sources; changes made here are overwritten.

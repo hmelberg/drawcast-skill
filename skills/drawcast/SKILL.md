@@ -154,8 +154,17 @@ YAML traps the player will reject or misread:
 
 ## 5. Check it yourself
 
-You cannot see the frames, so read your YAML beat by beat and picture each
-page as it will look while that line is spoken. Fix what fails:
+**First run the checker** (with code execution): it reads the YAML as the
+player does and lists every field the schema does not have, every missing id,
+every arrow end written as `[x, y]` instead of `{x: …, y: …}` — things the
+player skips. Fix each one and run it again until it prints `OK`:
+
+```
+node scripts/check_cast.mjs cast.yaml
+```
+
+Then, since you cannot see the frames, read your YAML beat by beat and picture
+each page as it will look while that line is spoken. Fix what fails:
 
 1. **Valid:** every field in the schema; every id referenced exists; template
    params per the template's file; quiz `correct` is 1-based and in range.
@@ -188,8 +197,9 @@ page as it will look while that line is spoken. Fix what fails:
 
 ## 6. Give the link
 
-With code execution (a Python or Node tool): save the YAML to a file and run
-the bundled script — both print the same link:
+With code execution (a Python or Node tool): save the YAML to a file, run the
+checker until it prints `OK` (step 5), then the bundled script — both print the
+same link:
 
 ```
 python3 scripts/make_link.py cast.yaml      # or: node scripts/make_link.mjs cast.yaml
