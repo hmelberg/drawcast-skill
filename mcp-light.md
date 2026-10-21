@@ -11,9 +11,12 @@ things to drag, several parts, a book, a moviecast, a Short, sources).
 
 ## The shape of a light drawcast
 
-- **One page**, 4:3, the default canvas. No `clear`, no parts.
-- **8–12 spoken lines**, unless the user asks for
-  another length.
+- **One page by default**, 4:3, the default canvas. **Up to three pages**
+  only when the story needs them — a new step that would crowd the first
+  figure: `clear` starts the next page (keep what is still needed). It still
+  plays straight through. No parts or playlists.
+- **8–12 spoken lines** on one page, **at most about 20** over three, unless
+  the user asks for another length.
 - **The story:** the question as asked → a concrete example with correct
   numbers → ONE insight, named in plain words in the last line, which ends
   the drawcast. One change at a time; key numbers on the canvas; short
@@ -41,8 +44,8 @@ Do not use these here; the full guide has them:
 Everything that shows rather than asks is yours — the rule card below has
 them all: `draw`, `highlight`, `point`, `focus`, `flow`, `camera`, `fade`,
 `move`, `arrange`, `flip`, `morph`, `step`, `copy`, `animate`, `show`,
-`scratch`, `label`, `card`, `pause`, and `vars` that an `animate` changes
-while it plays.
+`hide`, `erase`, `clear` (a new page), `scratch`, `label`, `card`, `pause`,
+and `vars` that an `animate` changes while it plays.
 
 ## The YAML
 
