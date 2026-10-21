@@ -69,6 +69,18 @@ person's name) and icons (`icon` elements, `icon` on node boxes and cards).
   `point: {at: {ref: "art:smear"}, gesture: glow}` or `highlight: {target:
   ["art:smear"]}` — or a place written in the command, `"art@[0.2, 0.76, 0.53,
   0.24]"`. Make each box a little generous; let the voice name the part.
+- **Ways to show a part:** `highlight` with no `effect` lifts it in a soft
+  light (the default — usually best); `effect: "magnify"` enlarges a small
+  detail where it stands for its sentence, `effect: "detail"` beside the
+  picture; `point` with `gesture: "glow"` draws an arrow to it.
+- **Zoom and pan with the camera:** `camera: {center: {ref: "art:dinteville"},
+  zoom: 2}` goes in close; the next `camera` centred elsewhere pans there
+  (`center: {ref: "art:smear"}, zoom: 2.5`); `camera: {reset: true}` steps
+  back to the whole picture — a good last look. Close, across, back out: it
+  tells a painting well.
+- **Ovals rarely:** prefer the soft light, magnify, the camera and the glow
+  arrow; an oval or ring round a place (`effect: "outline"`, `"ring"`,
+  `"circle"`, a `circle` gesture) at most once in a while.
 
 ## The YAML
 

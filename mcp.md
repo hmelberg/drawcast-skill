@@ -22,6 +22,10 @@ make the drawcast the user asks for, with these changes for the tools:
   numbered grid, every tenth from the top left, to read boxes off as
   fractions. A picture you know: storyline first, then box only what the
   story points at; one you do not know: look first. Never `regions: auto`.
+  Show a part with the soft light (`highlight`, no `effect`), `magnify`,
+  `detail`, a glow arrow, or the camera (`camera: {center: {ref:
+  "art:smear"}, zoom: 2.5}`, then elsewhere to pan, `reset: true` to step
+  back); ovals and rings round a place only once in a while.
 - **The files.** The ones every drawcast needs are in this guide, after the
   skill: `references/storyline.md`, `references/rule-card.md` and
   `references/look.md`. For any other file the skill names, call
