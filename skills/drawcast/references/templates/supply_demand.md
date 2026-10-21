@@ -315,7 +315,7 @@ Parameter schema:
   },
   "units": {
    "type": "object",
-   "description": "Real axes for readout and {market.*} only (all other params stay 0–100): {price: [0, 20], quantity: [0, 1000], price_unit: \"kr\", quantity_unit: \"flats\"}."
+   "description": "Real axes for readout and {market.*} only (all other params stay 0–100): {price: [0, 20], quantity: [0, 1000], price_unit: \"$\", quantity_unit: \"flats\"}."
   },
   "readout": {
    "type": "array",
@@ -392,7 +392,7 @@ Request: "Show demand increasing and where the new equilibrium lands." → param
 Request: "Supply falls: mark how much price and quantity moved, then erase the marks." → params: {"supply_shift":{"amount":-20},"change_arrows":true}
 Request: "Show that when demand is inelastic, buyers pay most of a tax." → params: {"demand":{"elasticity":"inelastic"},"supply":{},"equilibrium":{"show":true},"tax":{"amount":18},"regions":["government_revenue","deadweight_loss"]}
 Request: "What does a price ceiling cost society?" → params: {"demand":{},"supply":{},"equilibrium":{"show":true},"price_ceiling":{"level":32},"regions":["consumer_surplus","producer_surplus","transfer","deadweight_loss"]}
-Request: "What does a tax cost, in kroner?" → params: {"tax":{"amount":18},"units":{"price":[0,20],"quantity":[0,1000],"price_unit":"kr"},"readout":["revenue","dwl"]}
+Request: "What does a tax cost, in dollars?" → params: {"tax":{"amount":18},"units":{"price":[0,20],"quantity":[0,1000],"price_unit":"$"},"readout":["revenue","dwl"]}
 
 Viewer can: Drag a curve's middle to shift it, near an end to turn it (elasticity); drag a price ceiling, floor or the taxed curve up and down; equilibrium, shortage and deadweight loss follow.
 
