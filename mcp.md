@@ -17,6 +17,11 @@ make the drawcast the user asks for, with these changes for the tools:
 - **No scripts.** The skill's `scripts/` (check_cast, make_link, save_tmp,
   save_github) are not here: `show_drawcast` checks and makes the link. Never
   write a link by hand.
+- **Pictures:** before pointing into a picture (`regions`, places), call
+  `look_at_picture` with its `file` or `of`: it shows you the picture with a
+  numbered grid, every tenth from the top left, to read boxes off as
+  fractions. A picture you know: storyline first, then box only what the
+  story points at; one you do not know: look first. Never `regions: auto`.
 - **The files.** The ones every drawcast needs are in this guide, after the
   skill: `references/storyline.md`, `references/rule-card.md` and
   `references/look.md`. For any other file the skill names, call

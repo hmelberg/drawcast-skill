@@ -58,12 +58,17 @@ person's name) and icons (`icon` elements, `icon` on node boxes and cards).
   `show_drawcast` checks that the file exists on Commons; if you are not sure
   of the exact name, use `of: "<the work or subject>"` instead (Commons is
   searched; a smaller, drawn-style picture).
-- **Point into it** with a place on the picture, in fractions of its width
-  and height from the top left: `art@[x, y, w, h]` — `highlight: {target:
-  ["art@[0.0, 0.08, 0.42, 0.75]"]}`, `point: {at: {ref: "art@[0.2, 0.76,
-  0.53, 0.24]"}, gesture: glow}`. You usually cannot see the picture: point
-  only at parts whose position you know (the famous figures of a famous
-  painting), with generous boxes, and let the voice name them.
+- **See it before pointing into it:** call `look_at_picture` (`file`, or
+  `of`). It shows you the picture with a numbered grid, every tenth of its
+  width and height from the top left. A picture you know (a famous
+  painting): write the storyline first, then look and box **only the parts
+  the story points at**. A picture you do not know: look first, then write
+  the story.
+- **Point into it** by those boxes, in fractions `[x, y, w, h]` of the whole
+  picture: `regions: {smear: [0.2, 0.76, 0.53, 0.24]}` on the image, then
+  `point: {at: {ref: "art:smear"}, gesture: glow}` or `highlight: {target:
+  ["art:smear"]}` — or a place written in the command, `"art@[0.2, 0.76, 0.53,
+  0.24]"`. Make each box a little generous; let the voice name the part.
 
 ## The YAML
 
