@@ -34,7 +34,7 @@ Do not use these here; the full guide has them:
 - **no questions:** no `quiz`, and none of `explore`, `run`, `ask` (in any
   form: guesses, sorting, ranking, decks, matching, `choose`), `goto` or
   `wait` — a light drawcast plays straight through, like a video;
-- elements `image`, `code`, `music`, and the `play` verb; a `#column` /
+- films and video, `code`, `music`, and the `play` verb; a `#column` /
   `#row` book, `style` (moviecast, movie), `aspect` other than 4:3, `voices`
   and two speakers;
 - top-level `sources` and `cites`: use illustrative numbers and say so ("say
@@ -42,10 +42,28 @@ Do not use these here; the full guide has them:
 - live numbers the viewer drags (`vars` may drive an `animate`; that is fine).
 
 Everything that shows rather than asks is yours — the rule card below has
-them all: `draw`, `highlight`, `point`, `focus`, `flow`, `camera`, `fade`,
+them all (pictures and icons included): `draw`, `highlight`, `point`, `focus`, `flow`, `camera`, `fade`,
 `move`, `arrange`, `flip`, `morph`, `step`, `copy`, `animate`, `show`,
 `hide`, `erase`, `clear` (a new page), `scratch`, `label`, `card`, `pause`,
 and `vars` that an `animate` changes while it plays.
+
+## Pictures and icons
+
+A drawcast can show **one picture** — a painting, a photograph, a map — and
+point into it, which is how a painting is explained. And `portrait` (`of`: a
+person's name) and icons (`icon` elements, `icon` on node boxes and cards).
+
+- **The picture:** `{id: art, type: image, file: "File:<its exact name on
+  Wikimedia Commons>", width: 680}` — full colour, large, with its credit.
+  `show_drawcast` checks that the file exists on Commons; if you are not sure
+  of the exact name, use `of: "<the work or subject>"` instead (Commons is
+  searched; a smaller, drawn-style picture).
+- **Point into it** with a place on the picture, in fractions of its width
+  and height from the top left: `art@[x, y, w, h]` — `highlight: {target:
+  ["art@[0.0, 0.08, 0.42, 0.75]"]}`, `point: {at: {ref: "art@[0.2, 0.76,
+  0.53, 0.24]"}, gesture: glow}`. You usually cannot see the picture: point
+  only at parts whose position you know (the famous figures of a famous
+  painting), with generous boxes, and let the voice name them.
 
 ## The YAML
 
