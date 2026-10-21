@@ -4,7 +4,7 @@ A **drawcast** is a short, video-like teaching figure: drawn by hand on screen w
 narrates it, with a closing quiz and figures the viewer can play with. This skill lets your AI
 assistant write one and give you a link that plays it at [drawcast.app](https://www.drawcast.app/).
 
-Ask for one in plain words: *"make a drawcast about why the sky is blue"*.
+Ask for one in plain words: *"make a drawcast about why a² + b² = c², shown without algebra"*.
 
 ## Install
 
