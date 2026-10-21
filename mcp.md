@@ -9,8 +9,11 @@ make the drawcast the user asks for, with these changes for the tools:
   `show_drawcast` with the whole YAML. It checks it the way the player reads
   it: if it lists problems, nothing is shown — fix every one and call it
   again. When it passes, the drawcast plays in the conversation, drawn while
-  it is spoken, and the result gives its drawcast.app link: give the user that
-  link too, with "Spoken lines: N" and the one line the skill's step 6 asks for.
+  it is spoken, with a button that opens it on drawcast.app. Then write
+  "Spoken lines: N" and the one line the skill's step 6 asks for — **not the
+  link** (the skill's step 6 says to give it; here the panel has it). Give the
+  link from the result only if the user asks for it or cannot see the
+  drawcast playing.
 - **No scripts.** The skill's `scripts/` (check_cast, make_link, save_tmp,
   save_github) are not here: `show_drawcast` checks and makes the link. Never
   write a link by hand.
