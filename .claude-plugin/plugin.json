@@ -1,6 +1,6 @@
 {
   "name": "drawcast",
-  "version": "2026.10.21",
+  "version": "2026.10.23",
   "description": "Make drawcasts: short narrated whiteboard explainers, drawn by hand on screen, with a quiz and figures to play with. Your AI writes the drawcast and gives back a drawcast.app link that plays it.",
   "author": {
     "name": "Hans Olav Melberg"

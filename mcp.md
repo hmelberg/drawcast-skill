@@ -942,7 +942,9 @@ Ask:
   `gap: false` = no "−6.2%" written on the reveal's gap. `#interactive`
   asks for these about once a minute, varied.
 - Cards, nodes and bars (bar_chart `icons: [...]`, one per bar): a
-  concrete thing wears an `icon` (`match_icon` on a match partner); `look`
+  concrete thing wears an `icon` (`match_icon` on a match partner); a
+  match's icons stand left of the words, other cards' over them
+  (`icon_side: "top" | "left"` to choose); `look`
   paper (default) / flat / outline — the default is fine.
 - `feedback` (cast-level, or per ask/quiz; optional): one extra line after
   right/wrong by how well they did. For longer quizzes and lighter topics,
@@ -977,6 +979,20 @@ Ask:
   `<id>_quote` on its own beat; a YouTube url plays embedded). One per figure.
 - `inset` (`of`: another page's title / number / "previous"): no position;
   bring forward with `move` scale then back; only for referring back.
+- **Actors wear their picture.** The concrete things a figure is about —
+  what stands somewhere, moves or is counted (players and the ball, cars,
+  shoppers, animals) — are `icon` elements with `icon_look: picture` (size
+  about 60–90), moved and highlighted like any element, not circles with a
+  label. `flip: true` turns one to face the way it goes (most pictures face
+  left: a runner or car heading right needs it). Two groups (two teams): a
+  small coloured `ellipse` under each picture, moved with it. Plain dots
+  stay for abstract points (a data point, an equilibrium).
+- **A setting when the idea happens somewhere real** (a pitch, a road, a
+  shop, a kitchen, a leaf in the sun): the page's `setting: {ground: grass}`
+  lays a pale ground under it; `sky/soil/80` stacks two. Props only where
+  they belong, and few — usually none: `{icon: tree, place: "beside road"}`,
+  a shelf `{icon: apple, place: "along top", repeat: 4}`; never one per
+  corner. Abstract topics (a proof, a formula) get none; nor does `#plain`.
 - `icon` (`of`: keyword, `size`): when a card, node, bar or decorative picture
   names a concrete thing, give it an icon; draw by hand only when no icon
   fits or the drawing explains.
@@ -1015,7 +1031,9 @@ user sends a screenshot of the player, judge it by the first list.
 
 ### How it looks (the visual reviewer's list)
 
-- **Legibility:** text too small to read, text on top of text, labels sitting
+- **Legibility:** text too small to read at the size a viewer sees it (the
+  images may be shown smaller than a laptop watch page; do not call text
+  small only because its tile is small), text on top of text, labels sitting
   on lines, anything garbled, cut off or outside the page. Words on the canvas
   should be short cues — a word or three ("Survives", "Dies"); a label that
   writes out the spoken sentence is a problem, and shortening it is the fix.

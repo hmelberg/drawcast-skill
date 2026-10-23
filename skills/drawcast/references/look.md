@@ -9,7 +9,9 @@ user sends a screenshot of the player, judge it by the first list.
 
 ## How it looks (the visual reviewer's list)
 
-- **Legibility:** text too small to read, text on top of text, labels sitting
+- **Legibility:** text too small to read at the size a viewer sees it (the
+  images may be shown smaller than a laptop watch page; do not call text
+  small only because its tile is small), text on top of text, labels sitting
   on lines, anything garbled, cut off or outside the page. Words on the canvas
   should be short cues — a word or three ("Survives", "Dies"); a label that
   writes out the spoken sentence is a problem, and shortening it is the fix.

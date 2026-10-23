@@ -159,6 +159,16 @@ say so.
 - `#lively`, `#dynamic` — more motion in the drawing: builds, marks, counting, animation
   LIVELY: keep the drawing moving — build figures part by part with the voice, highlight and point at what is being said, let numbers count up and charts animate between stages (animate), move and flow what changes; something on the canvas changes with nearly every line. The viewer watches: add no questions for this tag.
 
+## listing
+
+- `#nothumbnail`, `#nothumb` — skip the thumbnail pages; the front page uses the poster under the thumb line
+  Write no thumbnail page (role: thumbnail) and no `thumbnails` field; keep the `thumb` line if you write one.
+
+## scene
+
+- `#plain` — no setting and no pictures on the story's things: plain dots and shapes
+  PLAIN: give no page a `setting`, and draw the story's things as plain dots and shapes with labels, not picture icons.
+
 ## book
 
 - `#column` — a book: written text in a column beside the figures, part by part

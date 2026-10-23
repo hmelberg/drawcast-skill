@@ -297,6 +297,81 @@
    ],
    "description": "Top heading: omitted, the title (on a page with no card); a string, that text; false, none."
   },
+  "setting": {
+   "type": "object",
+   "properties": {
+    "ground": {
+     "type": "string"
+    },
+    "props": {
+     "type": "array",
+     "maxItems": 16,
+     "items": {
+      "type": "object",
+      "properties": {
+       "icon": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "array",
+          "items": {
+           "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 5
+         },
+         {
+          "type": "object",
+          "properties": {
+           "of": {
+            "type": "string"
+           },
+           "set": {
+            "type": "string"
+           },
+           "or": {
+            "type": "array",
+            "items": {
+             "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 4
+           }
+          },
+          "required": [
+           "of"
+          ],
+          "additionalProperties": false
+         }
+        ]
+       },
+       "place": {
+        "type": "string"
+       },
+       "repeat": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 24
+       },
+       "size": {
+        "type": "number",
+        "minimum": 16,
+        "maximum": 160
+       }
+      },
+      "required": [
+       "icon",
+       "place"
+      ],
+      "additionalProperties": false
+     }
+    }
+   },
+   "additionalProperties": false,
+   "description": "Where it happens. ground: grass, sky, water, sand, soil, floor, desk, road, snow or night; \"sky/grass\" stacks two (\"sky/soil/40\": split 40 % down). props: pictures, place: left edge, right edge, top, bottom, top left…, along top, along bottom or beside <id>; repeat: a row."
+  },
   "page": {
    "type": "object",
    "properties": {
@@ -390,6 +465,18 @@
     "female"
    ],
    "description": "Narrator voice. Usually stamped from the #male/#female tags — omit unless the request states it. In dialogue this is speaker \"a\"; speaker \"b\" gets the contrasting voice."
+  },
+  "stress": {
+   "enum": [
+    "all",
+    "new",
+    "none"
+   ],
+   "description": "Stress marks drawn: all (default), new (only new words: glossed words, a turn's new words, elements with new: true), none. Speech keeps them."
+  },
+  "shuffle": {
+   "type": "boolean",
+   "description": "true: every quiz shuffles its choices (a quiz's own shuffle wins)."
   },
   "say_lang": {
    "type": "string",
@@ -692,6 +779,7 @@
        "sequence",
        "dialogue",
        "glossed",
+       "table",
        "spine",
        "timeline",
        "pinboard",
@@ -1208,6 +1296,13 @@
         },
         "gloss": {
          "type": "string"
+        },
+        "new": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         },
+         "description": "stress new: words that keep their marks."
         }
        },
        "required": [
@@ -1233,6 +1328,11 @@
       ],
       "description": "glossed: also WRITE the glosses small under the words — under: from the start (first exposure, the movie); after: once the read-first hold passes. dialogue: false — no glosses in the bubbles (the drill still cues with them)."
      },
+     "gloss_size": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "glossed: the written glosses' size (default 0.6 × font_size)."
+     },
      "read_first": {
       "type": "boolean",
       "description": "glossed: after the text is drawn the cast holds on an \"I've read it — play it ▸\" pill (taps on words still work; 3 s in Watch and the movie) — then the next speak, usually the text read aloud."
@@ -1244,6 +1344,28 @@
      "lang": {
       "type": "string",
       "description": "dialogue: BCP-47 tag of the turns, for the speech recogniser (default: the cast's language)."
+     },
+     "stress": {
+      "enum": [
+       "all",
+       "new",
+       "none"
+      ],
+      "description": "Stress marks drawn here, over the cast's stress."
+     },
+     "new": {
+      "oneOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      ],
+      "description": "stress new: true — its words are new and keep their marks; a list — just those words do (wherever they are shown)."
      },
      "work": {
       "type": "array",
@@ -1372,9 +1494,25 @@
       "description": "group layout: space between neighbours, logical units (default 40)."
      },
      "columns": {
-      "type": "integer",
-      "minimum": 1,
-      "description": "group layout grid: members per row. Leave it out and the grid picks the count that shows the members largest."
+      "anyOf": [
+       {
+        "type": "integer",
+        "minimum": 1
+       },
+       {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 6,
+        "items": {
+         "type": "string"
+        }
+       }
+      ],
+      "description": "group layout grid: members per row. Leave it out and the grid picks the count that shows the members largest. table: the header row, one string per column."
+     },
+     "row_headers": {
+      "type": "boolean",
+      "description": "table: the first column is row headers, smaller and softer (default: when columns starts with \"\")."
      },
      "walk": {
       "anyOf": [
@@ -1447,6 +1585,13 @@
      "tex": {
       "type": "string",
       "description": "math: LaTeX, drawn as handwriting; {v} writes var v's value, live (an argument needs {{v}}: \\frac{{B}}{…}, ^{{t}}). label: LaTeX instead of text."
+     },
+     "gaps": {
+      "type": "array",
+      "items": {
+       "type": "object"
+      },
+      "description": "internal: never write it."
      },
      "size": {
       "oneOf": [
@@ -1656,6 +1801,21 @@
      "icon_key": {
       "type": "string",
       "description": "node/icon: what the icon was resolved for (machine-written; copy VERBATIM if present)."
+     },
+     "icon_side": {
+      "type": "string",
+      "enum": [
+       "top",
+       "left"
+      ],
+      "description": "node rect/cards: the icon over the text (top) or beside it (left; a match's default)."
+     },
+     "flip": {
+      "type": "boolean",
+      "enum": [
+       true
+      ],
+      "description": "icon: mirrored left-right, so the picture faces the other way (a car driving left)."
      },
      "icon_look": {
       "type": "string",
@@ -1921,9 +2081,22 @@
           }
          }
         }
+       },
+       {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 12,
+        "items": {
+         "type": "array",
+         "minItems": 1,
+         "maxItems": 6,
+         "items": {
+          "type": "string"
+         }
+        }
        }
       ],
-      "description": "pieces grid: how many rows (n is the columns) — e.g. n: 4, rows: 3 cuts a rectangle into twelve cells, numbered row by row from the top left. At most 256 cells in all. spine: its rows {long, short, trigger} (two or three), each {label (a word or two), sub, slots: [words, or {text, note}]} — 1 to 5 slots, a trigger at most 3."
+      "description": "pieces grid: how many rows (n is the columns) — e.g. n: 4, rows: 3 cuts a rectangle into twelve cells, numbered row by row from the top left. At most 256 cells in all. spine: its rows {long, short, trigger} (two or three), each {label (a word or two), sub, slots: [words, or {text, note}]} — 1 to 5 slots, a trigger at most 3. table: a GRID OF WORDS (an endings table, a conjugation) — rows is a list of rows, each a list of cell strings ([[\"Кто? Что?\", \"сто́л\", \"столы́\"], [\"Где?\", \"в столе́\", \"в стола́х\"]]); columns is the header row ([\"\", \"singular\", \"plural\"]; \"\" first = the first column is row headers). Cells are <id>_r1c2 (rows and columns from 1, the header not counted), rows <id>_r1, columns <id>_c2, the header and rules <id>_head. {\"draw\": \"<id>\"} draws it all — unless commands draw its rows or cells: then it draws the frame and header alone, and the rows come as drawn. colors colour endings in the cells; say: true makes every cell tappable to hear. x, y: its centre (default the page's); it shrinks to fit the width."
      },
      "label": {
       "oneOf": [
@@ -3273,6 +3446,10 @@
      "reveal_stamp": {
       "type": "object",
       "description": "Machine-written; never write it."
+     },
+     "frame_slot": {
+      "type": "object",
+      "description": "Machine-written; never write it."
      }
     },
     "required": [
@@ -3316,7 +3493,7 @@
         "type": "string"
        }
       ],
-      "description": "With speak: false — heard, not read: the caption says \"🎧 Listen…\" until the next question is answered or a show_caption."
+      "description": "With speak: false — heard, not read: no caption (a listen ask's clip says \"🎧 Listen…\") until the next question is answered or a show_caption."
      },
      "show_caption": {
       "const": true,
@@ -3337,6 +3514,13 @@
        "brisk"
       ],
       "description": "With speak (or a quiz/ask): named delivery nudge — grave = slow and weighty for the key reveal; brisk = lightly quicker for recaps. Mark only the few lines where the meaning warrants it."
+     },
+     "fill": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "GAPS: write the [gaps] of these texts in, without asking."
      },
      "draw": {
       "type": "array",
@@ -3399,6 +3583,10 @@
        "required": {
         "type": "boolean",
         "description": "App only: the question cannot be skipped without answering. Movies never wait."
+       },
+       "shuffle": {
+        "type": "boolean",
+        "description": "Choices in a fixed mixed order; correct is for the order as written."
        },
        "say_answer": {
         "type": "boolean",
@@ -3525,6 +3713,45 @@
        },
        "reveal_stamp": {
         "type": "string",
+        "description": "Machine-written; never write it."
+       },
+       "above": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "array",
+          "items": {
+           "type": "string"
+          }
+         }
+        ],
+        "description": "Element id(s) shown with the question, in a band above the card (drawn for it; they leave with it). Not with on_canvas."
+       },
+       "below": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "array",
+          "items": {
+           "type": "string"
+          }
+         }
+        ],
+        "description": "Element id(s) that land with the answer, in a band under the card (with the reveal stamp). Not with on_canvas."
+       },
+       "frame": {
+        "type": "boolean",
+        "description": "true: the card stays put and its reveal stamp lands under it (implied by above/below). Not with on_canvas."
+       },
+       "frame_below": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        },
         "description": "Machine-written; never write it."
        },
        "confidence": {
@@ -3960,7 +4187,7 @@
         "items": {
          "type": "string"
         },
-        "description": "Machine-written from a list answer."
+        "description": "Machine-written from a list answer; on a say_it, other word orders accepted."
        },
        "translit": {
         "type": "boolean",
@@ -4007,6 +4234,45 @@
        },
        "reveal_stamp": {
         "type": "string",
+        "description": "Machine-written; never write it."
+       },
+       "above": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "array",
+          "items": {
+           "type": "string"
+          }
+         }
+        ],
+        "description": "Typed answer or multiple-choice listen: element id(s) shown with the question, in a band above the card (as quiz.above)."
+       },
+       "below": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "array",
+          "items": {
+           "type": "string"
+          }
+         }
+        ],
+        "description": "Typed answer or multiple-choice listen: element id(s) that land with the answer, under the card (as quiz.below)."
+       },
+       "frame": {
+        "type": "boolean",
+        "description": "Typed answer or multiple-choice listen: as quiz.frame."
+       },
+       "frame_below": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        },
         "description": "Machine-written; never write it."
        },
        "retry": {
@@ -4193,6 +4459,40 @@
          "type": "string"
         },
         "description": "Set by the odd-one-out expansion — never write it."
+       },
+       "gaps": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "array",
+          "items": {
+           "type": "string"
+          },
+          "minItems": 1
+         }
+        ],
+        "description": "GAPS: the text or glossed text (or a list) whose [bracketed] pieces the viewer fills in, in order — typed on keys made from the answers, or tapped from chips (choices, or [ом]{ом,ой,ая} per gap). The blanks show until it is answered; then the right forms stand."
+       },
+       "choices": {
+        "type": "array",
+        "minItems": 2,
+        "items": {
+         "type": "string"
+        },
+        "description": "gaps: chips to tap for every gap instead of typing."
+       },
+       "count_each": {
+        "type": "boolean",
+        "description": "gaps in a test: each gap counts as one question (default: the ask is one, right when every gap is)."
+       },
+       "gap_list": {
+        "type": "array",
+        "items": {
+         "type": "object"
+        },
+        "description": "Set by the gaps expansion — never write it."
        },
        "spot": {
         "type": "string",
@@ -4436,8 +4736,44 @@
         "description": "Jump to this label on a wrong VIEWER answer — typically back to the explanation, so the viewer re-watches and the question comes again. Movies always play straight through."
        },
        "listen": {
-        "type": "string",
-        "description": "LISTEN: a line the viewer hears but does not see, which the question is about — answered by options + correct, on + correct, or answers. reveal: true stamps its words at the answer."
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+           "type": "object",
+           "properties": {
+            "text": {
+             "type": "string"
+            },
+            "voice": {
+             "enum": [
+              "a",
+              "b"
+             ]
+            },
+            "gloss": {
+             "type": "string"
+            },
+            "who": {
+             "type": "string"
+            }
+           },
+           "required": [
+            "text"
+           ],
+           "additionalProperties": false
+          }
+         }
+        ],
+        "description": "LISTEN: a line the viewer hears but does not see, which the question is about — answered by options + correct, on + correct, or answers. reveal: true stamps its words at the answer. A list of lines: one clip in their voices. \"same\": another question on the clip before."
+       },
+       "transcript": {
+        "const": false,
+        "description": "listen: no words after the last question."
        },
        "options": {
         "type": "array",
@@ -4447,6 +4783,10 @@
          "type": "string"
         },
         "description": "listen: the choices, a few words each."
+       },
+       "shuffle": {
+        "type": "boolean",
+        "description": "listen options: as a quiz's shuffle (false: as written)."
        },
        "correct": {
         "type": "integer",
@@ -4635,11 +4975,11 @@
          "soft_light",
          "magnify"
         ],
-        "description": "glow (default) = suits the target: a yellow band under a line, a marker behind a code line, red ink on a formula, text or shape; circle = a hand-drawn ring; underline = a pen line under it; pulse = red ink that throbs three times first. box = a box drawn round the target; soft_light = on a picture place, the place lifted with a soft light, the rest untouched (the default there); outline = a thin oval round a picture place; light = a stronger wash of light over the place (with rest dim, grey, blur or paper it also changes the rest of the picture) — once or twice per cast at most; ring = a hand-drawn ring, detail = the place enlarged beside the picture (in the paper a tall painting leaves; over a far corner of a wide one), tied to it by two lines; magnify = a picture place enlarged where it stands for its sentence, then let back — for a small detail the voice describes. color replaces the red/yellow."
+        "description": "glow (default) = suits the target: a yellow band under a line, a marker behind a code line, red ink on a formula, text or shape; circle = a hand-drawn ring; underline = a pen line under it; strike = a pen line through it (while the voice speaks; a lasting cross-out is an annotation); pulse = red ink that throbs three times first. box = a box drawn round the target; soft_light = on a picture place, the place lifted with a soft light, the rest untouched (the default there); outline = a thin oval round a picture place; light = a stronger wash of light over the place (with rest dim, grey, blur or paper it also changes the rest of the picture) — once or twice per cast at most; ring = a hand-drawn ring, detail = the place enlarged beside the picture (in the paper a tall painting leaves; over a far corner of a wide one), tied to it by two lines; magnify = a picture place enlarged where it stands for its sentence, then let back — for a small detail the voice describes. color replaces the red/yellow."
        },
        "part": {
         "type": "string",
-        "description": "Only this piece: a formula term as TeX (\"t_r\"), or verbatim text of a label or code line."
+        "description": "Only this piece: a formula term as TeX (\"t_r\"), or text of a label or code line — any case, every occurrence; ^/$ anchor to a word's start/end, [ ] marks one piece of the key."
        },
        "duration": {
         "type": "number",
