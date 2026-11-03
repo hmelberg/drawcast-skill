@@ -174,6 +174,53 @@
     }
    ]
   },
+  "frame_item": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "icon": {
+       "type": "string"
+      },
+      "size": {
+       "type": "number"
+      }
+     },
+     "required": [
+      "icon"
+     ],
+     "additionalProperties": false
+    },
+    {
+     "type": "object",
+     "properties": {
+      "text": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "text"
+     ],
+     "additionalProperties": false
+    }
+   ]
+  },
+  "frame_items": {
+   "anyOf": [
+    {
+     "$ref": "#/$defs/frame_item"
+    },
+    {
+     "type": "array",
+     "items": {
+      "$ref": "#/$defs/frame_item"
+     }
+    }
+   ]
+  },
   "end_ref": {
    "type": "object",
    "properties": {
@@ -474,9 +521,93 @@
    ],
    "description": "Stress marks drawn: all (default), new (only new words: glossed words, a turn's new words, elements with new: true), none. Speech keeps them."
   },
+  "known": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   },
+   "description": "stress new: known forms a new word's other-forms rule leaves plain."
+  },
+  "reading": {
+   "enum": [
+    "all",
+    "new",
+    "none"
+   ],
+   "description": "learn zh: pinyin over the characters — all (default), new (only new words), none."
+  },
+  "pinyin_overrides": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "string"
+   },
+   "description": "learn zh: a word's reading wherever it occurs ({\"银行\": \"yín háng\"})."
+  },
+  "tones": {
+   "type": "boolean",
+   "description": "learn zh: characters and their pinyin coloured by tone."
+  },
+  "tone_colors": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   },
+   "minItems": 5,
+   "maxItems": 5,
+   "description": "learn zh: the five tone colours (1-4, neutral)."
+  },
+  "people": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "object",
+    "properties": {
+     "name": {
+      "type": "string"
+     },
+     "label": {
+      "type": "string"
+     },
+     "icon": {
+      "type": "string"
+     },
+     "voice": {
+      "enum": [
+       "a",
+       "b",
+       "c"
+      ]
+     },
+     "side": {
+      "enum": [
+       "left",
+       "right"
+      ]
+     }
+    },
+    "required": [
+     "name",
+     "icon",
+     "voice"
+    ],
+    "additionalProperties": false
+   },
+   "description": "Recurring people by id ({\"lin\": {name, label?, icon, voice a|b|c, side?}}): name in the learned language, label under the icon."
+  },
   "shuffle": {
    "type": "boolean",
    "description": "true: every quiz shuffles its choices (a quiz's own shuffle wins)."
+  },
+  "ui_lang": {
+   "enum": [
+    "ru",
+    "en"
+   ],
+   "description": "The cards' own words (Skip, Again, Question 2 of 5) in Russian."
+  },
+  "learn": {
+   "type": "string",
+   "pattern": "^[a-z]{2,3}(-[A-Za-z]{2,4})?$",
+   "description": "Language this lesson teaches (\"zh\")."
   },
   "say_lang": {
    "type": "string",
@@ -780,6 +911,7 @@
        "dialogue",
        "glossed",
        "table",
+       "words",
        "spine",
        "timeline",
        "pinboard",
@@ -1210,12 +1342,20 @@
       "type": "string",
       "enum": [
        "card",
+       "title",
        "text",
        "values",
        "symbols",
        "both"
       ],
-      "description": "link: card (default, a thumbnail) or text. math: {var}s as values (default), symbols or both."
+      "description": "link: card (default, a thumbnail), title (the title in a card, no picture) or text. math: {var}s as values (default), symbols or both."
+     },
+     "mark": {
+      "type": "string",
+      "enum": [
+       "replay"
+      ],
+      "description": "link, form text: replay draws a circular arrow before the words (Watch again)."
      },
      "open": {
       "type": "string",
@@ -1261,9 +1401,14 @@
      "say_voice": {
       "enum": [
        "a",
-       "b"
+       "b",
+       "c"
       ],
       "description": "Voice for `say` (default a)."
+     },
+     "drill": {
+      "type": "boolean",
+      "description": "words: false — no drill after the board (default: one, in a learn: cast)."
      },
      "speakers": {
       "type": "object",
@@ -1273,6 +1418,9 @@
        },
        "b": {
         "type": "string"
+       },
+       "c": {
+        "type": "string"
        }
       },
       "required": [
@@ -1280,7 +1428,14 @@
        "b"
       ],
       "additionalProperties": false,
-      "description": "dialogue: the two speakers — ids of elements you drew (icon, person, token), {\"a\": \"tom\", \"b\": \"masha\"}."
+      "description": "dialogue: the speakers — ids of elements you drew (icon, person, token), {\"a\": \"tom\", \"b\": \"masha\"}; c: a third (male)."
+     },
+     "people": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "dialogue: the speakers as ids of the cast's `people` ([\"mark\", \"lin\"]) instead of `speakers`: each person's icon and name are drawn at the page edges (side per person) and its voice is the speaker letter its turns use (by). Each person needs its own voice. `speakers` of your own wins."
      },
      "turns": {
       "type": "array",
@@ -1303,6 +1458,17 @@
           "type": "string"
          },
          "description": "stress new: words that keep their marks."
+        },
+        "pinyin": {
+         "anyOf": [
+          {
+           "type": "string"
+          },
+          {
+           "const": false
+          }
+         ],
+         "description": "Its reading, or false: none."
         }
        },
        "required": [
@@ -1311,7 +1477,7 @@
        ],
        "additionalProperties": false
       },
-      "description": "dialogue: a CONVERSATION as speech bubbles — the turns in order, {by: \"a\"|\"b\", text, gloss?} (gloss: a small grey translation under the words). Each is a bubble on its speaker's side, stacked down the page (at most six at once; older ones scroll away). A bare {\"draw\": \"<id>\"} draws the NEXT turn and, with no speak of its own, speaks it in its speaker's voice (a/b); give a speak to narrate over it instead. Parts: <id>_1 … (bubbles), <id>_1_words, <id>_1_gloss, <id>_on_a/b (the speaking mark); erase <id> takes all. Every bubble can be tapped to hear it again."
+      "description": "dialogue: a CONVERSATION as speech bubbles — the turns in order, {by: \"a\"|\"b\"|\"c\", text, gloss?} (gloss: a small grey translation under the words). Each is a bubble on its speaker's side, stacked down the page (at most six at once; older ones scroll away). A bare {\"draw\": \"<id>\"} draws the NEXT turn and, with no speak of its own, speaks it in its speaker's voice (a/b/c); give a speak to narrate over it instead. Parts: <id>_1 … (bubbles), <id>_1_words, <id>_1_gloss, <id>_on_a/b/c (the speaking mark); erase <id> takes all. Every bubble can be tapped to hear it again."
      },
      "gloss": {
       "type": "array",
@@ -1338,8 +1504,20 @@
       "description": "glossed: after the text is drawn the cast holds on an \"I've read it — play it ▸\" pill (taps on words still work; 3 s in Watch and the movie) — then the next speak, usually the text read aloud."
      },
      "practice": {
-      "type": "boolean",
-      "description": "dialogue: true offers a drill after the last turn — the viewer plays one speaker, saying their turns (text, then gloss as cue, then memory over the reviews); every turn needs a gloss."
+      "oneOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "enum": [
+         1,
+         2,
+         3,
+         4
+        ]
+       }
+      ],
+      "description": "dialogue: true offers a drill after the last turn — the viewer plays one speaker, saying their turns (text, then gloss as cue, then memory over the reviews); every turn needs a gloss. In a learn cast 1–4 is the ladder's start (1 watch, 2 read, 3 translate, 4 memory; true = 2)."
      },
      "lang": {
       "type": "string",
@@ -1366,6 +1544,29 @@
        }
       ],
       "description": "stress new: true — its words are new and keep their marks; a list — just those words do (wherever they are shown)."
+     },
+     "reading": {
+      "enum": [
+       "all",
+       "new",
+       "none"
+      ],
+      "description": "Pinyin over its Chinese, over the cast's reading."
+     },
+     "tones": {
+      "type": "boolean",
+      "description": "Its characters and pinyin coloured by tone."
+     },
+     "pinyin": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "const": false
+       }
+      ],
+      "description": "Its whole reading (\"xíng zǒu\"), or false: no pinyin over it."
      },
      "work": {
       "type": "array",
@@ -1485,7 +1686,8 @@
        "column",
        "grid",
        "crowd",
-       "auto"
+       "auto",
+       "pairs"
       ],
       "description": "group: ARRANGE the members — \"row\" side by side, \"column\" stacked, \"auto\" a row on a wide screen and a column on a tall one, \"grid\" `columns` wide, or, with no `columns`, as wide as shows the members largest. Every position is computed from the members' own sizes, so a structure of boxes needs NO x/y anywhere: declare the parts, wrap them in a group with a layout, and join them with arrows. Boxes in a laid-out group are given one size (the largest needed) so the row reads as a row. `gap` (default 40) spaces them, `align` (center/start/end) sets the cross axis. Combine with `fit` to scale the finished arrangement into a region. population: \"grid\" (default) or \"crowd\" (people standing about)."
      },
@@ -1509,6 +1711,16 @@
        }
       ],
       "description": "group layout grid: members per row. Leave it out and the grid picks the count that shows the members largest. table: the header row, one string per column."
+     },
+     "icons": {
+      "type": "array",
+      "items": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "description": "table: per row, a keyword or \"auto\" over the table's icon (null: the table's)."
      },
      "row_headers": {
       "type": "boolean",
@@ -1535,9 +1747,10 @@
       "enum": [
        "center",
        "start",
-       "end"
+       "end",
+       "left"
       ],
-      "description": "group layout: cross-axis alignment (default center)."
+      "description": "group layout: cross-axis alignment (default center). A text or glossed: \"left\", its rows start at x."
      },
      "equalize": {
       "type": "boolean",
@@ -1740,7 +1953,7 @@
      },
      "radius": {
       "type": "number",
-      "description": "shape circle / sector / arc / regular polygon / pieces / angle: radius in logical units (angle default 40). point: the dot's radius in canvas units (default 7; e.g. 20 for a ball) — bind it to animate. node rect: corner radius (default 0)."
+      "description": "shape circle / sector / arc / regular polygon / pieces / angle: radius in logical units (angle default 40). point: the dot's radius in canvas units (default 7; e.g. 20 for a ball) — bind it to animate. node rect / shape rect: corner radius (default 0)."
      },
      "shadow": {
       "type": "boolean",
@@ -1792,7 +2005,7 @@
         "additionalProperties": false
        }
       ],
-      "description": "node rect: an icon inside the box, above its text — a keyword (\"shark\"), a list tried in order, or {\"of\", \"set\", \"or\"}; the box grows to fit."
+      "description": "node rect: an icon inside the box, above its text — a keyword (\"shark\"), a list tried in order, or {\"of\", \"set\", \"or\"}; the box grows to fit. text/table: \"auto\" (a picture from the English gloss, only a concrete thing) or a keyword, beside the word / each row."
      },
      "icon_strokes": {
       "type": "string",
@@ -1816,6 +2029,63 @@
        true
       ],
       "description": "icon: mirrored left-right, so the picture faces the other way (a car driving left)."
+     },
+     "talks": {
+      "oneOf": [
+       {
+        "type": "string",
+        "pattern": "^[a-z]$"
+       },
+       {
+        "type": "boolean",
+        "enum": [
+         false
+        ]
+       }
+      ],
+      "description": "icon: the voice it talks with (\"a\"): a mouth moves while that voice speaks. Dialogue speakers talk by themselves; false: quiet."
+     },
+     "device": {
+      "oneOf": [
+       {
+        "type": "string",
+        "enum": [
+         "laptop",
+         "phone"
+        ]
+       },
+       {
+        "type": "object",
+        "properties": {
+         "kind": {
+          "type": "string",
+          "enum": [
+           "laptop",
+           "phone"
+          ]
+         },
+         "name": {
+          "type": "string"
+         }
+        },
+        "required": [
+         "kind"
+        ],
+        "additionalProperties": false
+       }
+      ],
+      "description": "icon: on a call — a laptop screen or a phone around it, {\"kind\": \"phone\", \"name\": \"Па́па\"} names it underneath."
+     },
+     "mouth": {
+      "type": "array",
+      "items": {
+       "type": "number",
+       "minimum": 0,
+       "maximum": 1
+      },
+      "minItems": 3,
+      "maxItems": 3,
+      "description": "icon: a talking face's mouth [x, y, w], shares of its box (y down), when misplaced."
      },
      "icon_look": {
       "type": "string",
@@ -2637,7 +2907,7 @@
      },
      "items": {
       "type": "array",
-      "minItems": 2,
+      "minItems": 1,
       "maxItems": 30,
       "items": {
        "anyOf": [
@@ -2852,10 +3122,35 @@
           }
          },
          "additionalProperties": false
+        },
+        {
+         "type": "object",
+         "properties": {
+          "word": {
+           "type": "string"
+          },
+          "gloss": {
+           "type": "string"
+          },
+          "icon": {
+           "type": "string"
+          },
+          "new": {
+           "type": "boolean"
+          },
+          "pinyin": {
+           "type": "string"
+          }
+         },
+         "required": [
+          "word",
+          "gloss"
+         ],
+         "additionalProperties": false
         }
        ]
       },
-      "description": "sequence: the pictures in turn — {icon, label} (icon a keyword or fallbacks [\"brick\", \"wall\"]), {text, label} for a paper card, or the id of an element you drew; mark: a short verdict word or a colour, shown under it in the strip once done; cites: source ids, as on any element. cards: cards the viewer ORDERS or SORTS, asked with an ask on: <id> (rank: they drag the cards and press Answer, and the cards slide into the true order; sort: every card, then Done shows the answer — check: \"each\" judges each drop, a wrong card moved to its box). RANK: the items in their TRUE order, first = most/earliest/top (a word or three each: \"USA\", \"Norway\"), with ends naming the two ends. SORT: give bins, and each item {text, bin} (the viewer drags or TAPS a card to send it to a box); deck: true deals up to 30 cards one at a time. TAP ALL THE …: give select (the one box's title) and items {text, in: true} for those that belong; the rest stay out. 2–8 items, up to 30 with deck. The cards are drawn SHUFFLED, so draw <id> before the ask; after it they stand in the true order. Cards are <id>_1 … in true order; sort's boxes <id>_bin_1 …. An item {text, icon: \"shark\"} draws an icon on its card (match_icon: on its partner)."
+      "description": "sequence: the pictures in turn — {icon, label} (icon a keyword or fallbacks [\"brick\", \"wall\"]), {text, label} for a paper card, or the id of an element you drew; mark: a short verdict word or a colour, shown under it in the strip once done; cites: source ids, as on any element. cards: cards the viewer ORDERS or SORTS, asked with an ask on: <id> (rank: they drag the cards and press Answer, and the cards slide into the true order; sort: every card, then Done shows the answer — check: \"each\" judges each drop, a wrong card moved to its box). RANK: the items in their TRUE order, first = most/earliest/top (a word or three each: \"USA\", \"Norway\"), with ends naming the two ends. SORT: give bins, and each item {text, bin} (the viewer drags or TAPS a card to send it to a box); deck: true deals up to 30 cards one at a time. TAP ALL THE …: give select (the one box's title) and items {text, in: true} for those that belong; the rest stay out. 2–8 items, up to 30 with deck. The cards are drawn SHUFFLED, so draw <id> before the ask; after it they stand in the true order. Cards are <id>_1 … in true order; sort's boxes <id>_bin_1 …. An item {text, icon: \"shark\"} draws an icon on its card (match_icon: on its partner). words: a WORD BOARD — items [{word, gloss, icon?: \"auto\" or a keyword, new?: true, pinyin?}]; layout grid (default to 6 items), column or pairs; drill: false leaves out the drill that follows it. A bare {\"draw\": \"<id>\"} draws the NEXT item and says its word; {\"draw\": \"<id>_all\"} the rest. Parts <id>_w1 (word), <id>_g1 (gloss), <id>_i1 (icon)."
      },
      "bins": {
       "type": "array",
@@ -3393,6 +3688,10 @@
         "type": "string",
         "description": "Stroke/text color, CSS color string."
        },
+       "stroke": {
+        "type": "string",
+        "description": "The outline's color (a node's rim; its text stays ink)."
+       },
        "fill": {
         "type": "string",
         "description": "Fill color for regions/shapes."
@@ -3503,9 +3802,10 @@
       "type": "string",
       "enum": [
        "a",
-       "b"
+       "b",
+       "c"
       ],
-      "description": "With speak in a dialogue: which speaker reads this line — \"a\" (the lead/teacher, the default) or \"b\" (the second voice). Also on a quiz/ask, speak or not: that speaker reads its question and right/wrong."
+      "description": "With speak in a dialogue: which speaker reads this line — \"a\" (the lead/teacher, the default), \"b\" (the second voice) or \"c\" (a third, male). Also on a quiz/ask, speak or not: that speaker reads its question and right/wrong."
      },
      "delivery": {
       "type": "string",
@@ -3716,32 +4016,20 @@
         "description": "Machine-written; never write it."
        },
        "above": {
-        "anyOf": [
+        "allOf": [
          {
-          "type": "string"
-         },
-         {
-          "type": "array",
-          "items": {
-           "type": "string"
-          }
+          "$ref": "#/$defs/frame_items"
          }
         ],
-        "description": "Element id(s) shown with the question, in a band above the card (drawn for it; they leave with it). Not with on_canvas."
+        "description": "Element id(s), {icon, size?} or {text} (a list may mix them) shown with the question, in a band above the card (drawn for it; they leave with it). Not with on_canvas."
        },
        "below": {
-        "anyOf": [
+        "allOf": [
          {
-          "type": "string"
-         },
-         {
-          "type": "array",
-          "items": {
-           "type": "string"
-          }
+          "$ref": "#/$defs/frame_items"
          }
         ],
-        "description": "Element id(s) that land with the answer, in a band under the card (with the reveal stamp). Not with on_canvas."
+        "description": "Element id(s), {icon, size?} or {text} that land with the answer, in a band under the card (with the reveal stamp). Not with on_canvas."
        },
        "frame": {
         "type": "boolean",
@@ -3882,6 +4170,145 @@
       "required": [
        "cards"
       ],
+      "additionalProperties": false
+     },
+     "drill": {
+      "type": "object",
+      "description": "Drill till you drop (a language lesson): \"Drill ↻ · Go on\", then questions at random until the viewer stops. {\"drill\": {\"last\": 4}} (the 4 asks before; last_items: each gap one), {\"drill\": {\"since\": \"<label>\"}}, or generated: {\"drill\": {\"of\": \"numbers\", \"range\": \"1-100\", \"as\": \"hear\", \"answer\": \"type\"}} — of: numbers, weekdays, months, dates, times, tones (Chinese), table:<id>.",
+      "properties": {
+       "last": {
+        "type": "integer",
+        "minimum": 1
+       },
+       "last_items": {
+        "type": "integer",
+        "minimum": 1
+       },
+       "since": {
+        "type": "string"
+       },
+       "of": {
+        "type": "string"
+       },
+       "as": {
+        "type": "string",
+        "enum": [
+         "hear",
+         "read",
+         "write",
+         "both",
+         "mixed"
+        ]
+       },
+       "answer": {
+        "type": "string",
+        "enum": [
+         "choose",
+         "type",
+         "flashcard"
+        ],
+        "description": "The start (default choose); the viewer may switch."
+       },
+       "allow": {
+        "type": "object",
+        "properties": {
+         "answer": {
+          "type": "array",
+          "items": {
+           "type": "string",
+           "enum": [
+            "choose",
+            "type",
+            "flashcard"
+           ]
+          }
+         },
+         "as": {
+          "type": "array",
+          "items": {
+           "type": "string",
+           "enum": [
+            "hear",
+            "read",
+            "write",
+            "mixed"
+           ]
+          }
+         }
+        },
+        "additionalProperties": false,
+        "description": "What the viewer may switch to."
+       },
+       "ladder": {
+        "type": "boolean",
+        "description": "Level up: choose, type, by ear."
+       },
+       "range": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "array",
+          "items": {
+           "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+         }
+        ]
+       },
+       "by": {
+        "type": "integer",
+        "minimum": 1
+       },
+       "form": {
+        "type": "string"
+       },
+       "voice": {
+        "type": "string",
+        "enum": [
+         "a",
+         "b",
+         "c"
+        ]
+       },
+       "lang": {
+        "type": "string"
+       },
+       "title": {
+        "type": "string"
+       },
+       "rounds": {
+        "oneOf": [
+         {
+          "type": "integer",
+          "minimum": 1
+         },
+         {
+          "const": "endless"
+         }
+        ]
+       },
+       "round": {
+        "type": "integer",
+        "minimum": 1
+       },
+       "options": {
+        "type": "integer",
+        "minimum": 2,
+        "maximum": 6
+       },
+       "columns": {
+        "type": "array",
+        "items": {
+         "type": "integer",
+         "minimum": 2
+        },
+        "minItems": 1,
+        "description": "table: only these columns (1-based)."
+       }
+      },
       "additionalProperties": false
      },
      "results": {
@@ -4189,6 +4616,13 @@
         },
         "description": "Machine-written from a list answer; on a say_it, other word orders accepted."
        },
+       "order": {
+        "type": "string",
+        "enum": [
+         "free"
+        ],
+        "description": "learn: [a][b][c] chunks of the answer in any order."
+       },
        "translit": {
         "type": "boolean",
         "description": "A Cyrillic answer may also be typed in Latin letters (kot) — the default; false asks for Cyrillic."
@@ -4199,6 +4633,15 @@
          "strict"
         ],
         "description": "A missing accent (manana for mañana) is forgiven, the spelling shown; strict marks it wrong."
+       },
+       "script": {
+        "type": "string",
+        "enum": [
+         "hanzi",
+         "pinyin",
+         "both"
+        ],
+        "description": "learn zh: how the answer may be typed — characters, pinyin (marks, numbers or bare), or both (default)."
        },
        "keyboard": {
         "type": "boolean",
@@ -4215,6 +4658,35 @@
        "wrong": {
         "type": "string",
         "description": "Spoken on a wrong attempt. One sentence. Check mode only."
+       },
+       "wrong_for": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "required": [
+          "answers",
+          "line"
+         ],
+         "properties": {
+          "answers": {
+           "anyOf": [
+            {
+             "type": "string"
+            },
+            {
+             "type": "array",
+             "items": {
+              "type": "string"
+             }
+            }
+           ]
+          },
+          "line": {
+           "type": "string"
+          }
+         }
+        },
+        "description": "Typed: a line per known wrong answer, instead of wrong: [{\"answers\": [\"в вывод\"], \"line\": \"…\"}]."
        },
        "reveal": {
         "allOf": [
@@ -4237,29 +4709,17 @@
         "description": "Machine-written; never write it."
        },
        "above": {
-        "anyOf": [
+        "allOf": [
          {
-          "type": "string"
-         },
-         {
-          "type": "array",
-          "items": {
-           "type": "string"
-          }
+          "$ref": "#/$defs/frame_items"
          }
         ],
         "description": "Typed answer or multiple-choice listen: element id(s) shown with the question, in a band above the card (as quiz.above)."
        },
        "below": {
-        "anyOf": [
+        "allOf": [
          {
-          "type": "string"
-         },
-         {
-          "type": "array",
-          "items": {
-           "type": "string"
-          }
+          "$ref": "#/$defs/frame_items"
          }
         ],
         "description": "Typed answer or multiple-choice listen: element id(s) that land with the answer, under the card (as quiz.below)."
@@ -4459,6 +4919,13 @@
          "type": "string"
         },
         "description": "Set by the odd-one-out expansion — never write it."
+       },
+       "reveal_erase": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        },
+        "description": "Machine-written; never write it."
        },
        "gaps": {
         "anyOf": [
@@ -4715,6 +5182,10 @@
         "type": "boolean",
         "description": "With `on`: letting go of the drag is the answer (default true). false shows an Answer button, so the viewer can adjust before answering — for a careful estimate. Several parts (on: all, a whole pie) always get the button."
        },
+       "turn": {
+        "type": "boolean",
+        "description": "Market guess: false = the curve can only be moved, not turned."
+       },
        "relative": {
         "type": "boolean",
         "description": "With `on`: tolerance is a fraction of the true value (within 20 % = tolerance 0.2) — for money and other quantities spanning orders of magnitude."
@@ -4752,7 +5223,8 @@
             "voice": {
              "enum": [
               "a",
-              "b"
+              "b",
+              "c"
              ]
             },
             "gloss": {
@@ -4772,8 +5244,13 @@
         "description": "LISTEN: a line the viewer hears but does not see, which the question is about — answered by options + correct, on + correct, or answers. reveal: true stamps its words at the answer. A list of lines: one clip in their voices. \"same\": another question on the clip before."
        },
        "transcript": {
-        "const": false,
-        "description": "listen: no words after the last question."
+        "enum": [
+         false,
+         "replay",
+         "compact",
+         "bare"
+        ],
+        "description": "listen: the words after the last question — \"compact\" (several lines' default: all lines on a card, ▶ again; \"bare\": without glosses), \"replay\" (line by line, one line's default), false: none."
        },
        "options": {
         "type": "array",
@@ -4816,7 +5293,8 @@
        "voice": {
         "enum": [
          "a",
-         "b"
+         "b",
+         "c"
         ],
         "description": "listen / say_it: whose voice says the line (default a)."
        },
@@ -4978,8 +5456,19 @@
         "description": "glow (default) = suits the target: a yellow band under a line, a marker behind a code line, red ink on a formula, text or shape; circle = a hand-drawn ring; underline = a pen line under it; strike = a pen line through it (while the voice speaks; a lasting cross-out is an annotation); pulse = red ink that throbs three times first. box = a box drawn round the target; soft_light = on a picture place, the place lifted with a soft light, the rest untouched (the default there); outline = a thin oval round a picture place; light = a stronger wash of light over the place (with rest dim, grey, blur or paper it also changes the rest of the picture) — once or twice per cast at most; ring = a hand-drawn ring, detail = the place enlarged beside the picture (in the paper a tall painting leaves; over a far corner of a wide one), tied to it by two lines; magnify = a picture place enlarged where it stands for its sentence, then let back — for a small detail the voice describes. color replaces the red/yellow."
        },
        "part": {
-        "type": "string",
-        "description": "Only this piece: a formula term as TeX (\"t_r\"), or text of a label or code line — any case, every occurrence; ^/$ anchor to a word's start/end, [ ] marks one piece of the key."
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "array",
+          "items": {
+           "type": "string"
+          },
+          "minItems": 1
+         }
+        ],
+        "description": "A list marks each piece. Only this piece: a formula term as TeX (\"t_r\"), or text of a label or code line — any case, every occurrence; ^/$ anchor to a word's start/end, [ ] marks one piece of the key."
        },
        "duration": {
         "type": "number",

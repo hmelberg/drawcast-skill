@@ -78,6 +78,11 @@ person's name) and icons (`icon` elements, `icon` on node boxes and cards).
   (`center: {ref: "art:smear"}, zoom: 2.5`); `camera: {reset: true}` steps
   back to the whole picture — a good last look. Close, across, back out: it
   tells a painting well.
+- **A painting, by default:** one narrator; the picture right away
+  (`heading: false`), its title as a `text` over it and the painter's name
+  under it, drawn with the painting and erased together a few lines in; the
+  painting large and centred; zoom in and back out; `magnify` for small parts; no quiz or ask
+  unless asked.
 - **Ovals rarely:** prefer the soft light, magnify, the camera and the glow
   arrow; an oval or ring round a place (`effect: "outline"`, `"ring"`,
   `"circle"`, a `circle` gesture) at most once in a while.
@@ -663,7 +668,10 @@ Attention (nothing changes):
   default glow suits the target; `effect`: `circle`, `underline`, `pulse`,
   `box` (a group target gets one circle/box round the whole); `part`
   narrows it to a TeX term or phrase. On a picture: a soft
-  light; several places = stops in one sentence; `"lift": true` starts fresh.
+  light; several places = stops in one sentence; `"lift": true` starts fresh;
+  `"effect": "magnify"` enlarges a small part where it stands. A painting
+  cast: one narrator, the picture at once, its title
+  over it and the painter under it as `text` that goes a few lines in, zoom in and out, no quiz unless asked.
   ONE element talked about → highlight.
 - `point`: `{"point": {"at": {"ref": "eq"}, "gesture": "circle|tap|underline"}}`
   — the laser travels; a DISTANCE or relation → point. On a picture it draws
@@ -826,7 +834,8 @@ Ask:
 ### Elements with more than the schema
 
 - `portrait` (`of`: a person's name; `"cameo": true` on the beat that FIRST
-  names them, erased after a beat or two; one or two per drawcast; the name
+  names them, erased after a beat or two; one or two per drawcast — not on a
+  painting cast, where the painter's name is a `text` under the picture; the name
   caption is automatic — `"caption": false` for none; never invent a url; `reveal`: develop/iris/drift/fade).
 - `source` (`of`: a work's title — preferred; `doi`/`isbn`/`archive`/`url`
   only when the request supplied them; `page`; `quote` VERBATIM, draw

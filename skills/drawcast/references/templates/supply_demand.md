@@ -34,7 +34,7 @@ Parameter schema:
        "maximum": 2.5
       }
      ],
-     "description": "A word (gentle=0.55, medium=1, steep=1.5) or a factor k. To animate it, give a number in the base params too (with no numeric start it jumps). Saturates at k ≈ 1.05 — every value above draws the SAME curve, so `steep` ≈ `medium`: to make one curve markedly steeper, flatten the other."
+     "description": "A word (gentle=0.55, medium=1, steep=1.5) or a factor k. To animate it, give a number in the base params too. Saturates at k ≈ 1.05 — every value above draws the SAME curve, so `steep` ≈ `medium`: to make one curve markedly steeper, flatten the other."
     },
     "curvature": {
      "type": "string",
@@ -63,7 +63,7 @@ Parameter schema:
        "maximum": 1.94
       }
      ],
-     "description": "How flat or steep, as an elasticity — the lever for tax incidence. Words: 0.06, 0.5, 1 (unit, default), 1.5, 1.94 in enum order; any number in that range animates. Unlike steepness it reaches near-vertical and near-horizontal, and it never moves the equilibrium, so figures at different elasticities compare directly."
+     "description": "How flat or steep, as an elasticity — the lever for tax incidence. Words: 0.06, 0.5, 1 (unit, default), 1.5, 1.94 in enum order; any number in that range animates. Unlike steepness it reaches near-vertical and near-horizontal and never moves the equilibrium."
     },
     "label": {
      "type": "string",
@@ -139,7 +139,7 @@ Parameter schema:
     },
     "label": {
      "type": "string",
-     "description": "Default \"E\"."
+     "description": "Default \"E\". shift_label, shift_p_label, shift_q_label name the new one (E′ P*′ Q*′; \"\" none)."
     },
     "guides": {
      "type": "boolean",
@@ -231,7 +231,7 @@ Parameter schema:
   },
   "tax": {
    "type": "object",
-   "description": "A tax on the market: draws the shifted curve, the new equilibrium, and the two prices the two sides now face — the price buyers pay and the price sellers receive. Use for any request about tax incidence, who bears a tax, tax revenue, subsidies, or deadweight loss from a tax. Nothing is SHADED unless you also list it in `regions`.",
+   "description": "A tax on the market: draws the shifted curve, the new equilibrium, and the two prices the two sides now face — the price buyers pay and the price sellers receive. Use for any request about tax incidence, who bears a tax, tax revenue, subsidies, or deadweight loss from a tax.",
    "properties": {
     "amount": {
      "type": "number",
@@ -245,7 +245,7 @@ Parameter schema:
       "seller",
       "buyer"
      ],
-     "description": "Who the tax is collected from: seller (default) shifts supply up, buyer shifts demand down. The figure comes out IDENTICAL either way — same quantity, same two prices — which is the point worth showing when a request asks whether it matters who pays."
+     "description": "Who the tax is collected from: seller (default) shifts supply up, buyer shifts demand down. The figure comes out IDENTICAL either way — same quantity, same two prices — the point to show when asked whether it matters who pays."
     },
     "kind": {
      "type": "string",

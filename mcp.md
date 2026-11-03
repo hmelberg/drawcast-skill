@@ -25,7 +25,10 @@ make the drawcast the user asks for, with these changes for the tools:
   Show a part with the soft light (`highlight`, no `effect`), `magnify`,
   `detail`, a glow arrow, or the camera (`camera: {center: {ref:
   "art:smear"}, zoom: 2.5}`, then elsewhere to pan, `reset: true` to step
-  back); ovals and rings round a place only once in a while.
+  back); ovals and rings round a place only once in a while. A painting, by
+  default: one narrator, the picture right away with its title over it and
+  the painter's name under it as `text`, erased a few lines in (`heading: false`), zoom in and out, `magnify`, no
+  quiz unless asked.
 - **The files.** The ones every drawcast needs are in this guide, after the
   skill: `references/storyline.md`, `references/rule-card.md` and
   `references/look.md`. For any other file the skill names, call
@@ -809,7 +812,10 @@ Attention (nothing changes):
   default glow suits the target; `effect`: `circle`, `underline`, `pulse`,
   `box` (a group target gets one circle/box round the whole); `part`
   narrows it to a TeX term or phrase. On a picture: a soft
-  light; several places = stops in one sentence; `"lift": true` starts fresh.
+  light; several places = stops in one sentence; `"lift": true` starts fresh;
+  `"effect": "magnify"` enlarges a small part where it stands. A painting
+  cast: one narrator, the picture at once, its title
+  over it and the painter under it as `text` that goes a few lines in, zoom in and out, no quiz unless asked.
   ONE element talked about → highlight.
 - `point`: `{"point": {"at": {"ref": "eq"}, "gesture": "circle|tap|underline"}}`
   — the laser travels; a DISTANCE or relation → point. On a picture it draws
@@ -972,7 +978,8 @@ Ask:
 ### Elements with more than the schema
 
 - `portrait` (`of`: a person's name; `"cameo": true` on the beat that FIRST
-  names them, erased after a beat or two; one or two per drawcast; the name
+  names them, erased after a beat or two; one or two per drawcast — not on a
+  painting cast, where the painter's name is a `text` under the picture; the name
   caption is automatic — `"caption": false` for none; never invent a url; `reveal`: develop/iris/drift/fade).
 - `source` (`of`: a work's title — preferred; `doi`/`isbn`/`archive`/`url`
   only when the request supplied them; `page`; `quote` VERBATIM, draw
